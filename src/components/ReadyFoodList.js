@@ -240,6 +240,8 @@ const ReadyFoodsList = () => {
         onOk={updateReadyFood}
         okText="Kaydet"
         cancelText="İptal"
+        okButtonProps={{ style: {  borderColor: '#ef7927', color: 'white', backgroundColor:"#ef7927" } }}
+        cancelButtonProps={{style:{backgroundColor:"white",color:"black",borderColor:"rgba(0, 0, 0, 0.2)"}}}
       >
         <Form {...updateFormLayout}>
           <Form.Item label="Ürün Adı">
@@ -269,98 +271,88 @@ const ReadyFoodsList = () => {
             )}
           </Form.Item>
           <Form.Item label="Besin Değerleri">
-            {updateNutritionalValues.map((attr, index) => (
-              <div key={index} style={{ marginBottom: "8px" }}>
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Birim:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.unit}
-                  onChange={(e) =>
-                    handleNutritionalValueChange("unit", e.target.value, index)
-                  }
-                />
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Tür:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.type}
-                  onChange={(e) =>
-                    handleNutritionalValueChange("type", e.target.value, index)
-                  }
-                />
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Karbonhidrat:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.carbohydrateAmount}
-                  onChange={(e) =>
-                    handleNutritionalValueChange(
-                      "carbohydrateAmount",
-                      e.target.value,
-                      index
-                    )
-                  }
-                />
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Protein:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.proteinAmount}
-                  onChange={(e) =>
-                    handleNutritionalValueChange(
-                      "proteinAmount",
-                      e.target.value,
-                      index
-                    )
-                  }
-                />
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Yağ:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.fatAmount}
-                  onChange={(e) =>
-                    handleNutritionalValueChange("fatAmount", e.target.value, index)
-                  }
-                />
-                <span style={{ marginRight: "16px", fontWeight: "bold" }}>
-                  Kalori:
-                </span>
-                <Input
-                  style={{ width: "100px", marginRight: "16px" }}
-                  value={attr.calorieAmount}
-                  onChange={(e) =>
-                    handleNutritionalValueChange(
-                      "calorieAmount",
-                      e.target.value,
-                      index
-                    )
-                  }
-                />
-                <Button
-                  type="danger"
-                  icon={<DeleteOutlined />}
-                  onClick={() => handleDeleteNutritionalValue(attr.id)}
-                >
-                  Sil
-                </Button>
-              </div>
-            ))}
-            <Button
-              type="dashed"
-              onClick={handleAddNutritionalValue}
-              style={{ width: "100%" }}
-              icon={<PlusOutlined />}
-            >
-              Besin Değeri Ekle
-            </Button>
-          </Form.Item>
+  {updateNutritionalValues.map((attr, index) => (
+    <div key={index} style={{ marginBottom: "16px" }}>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <div style={{ flexBasis: "45%", marginRight: "8px",marginTop:"5px " }}>
+          <label>Birim:</label>
+          <Input
+            value={attr.unit}
+            onChange={(e) =>
+              handleNutritionalValueChange("unit", e.target.value, index)
+            }
+          />
+        </div>
+        <div style={{ flexBasis: "45%",marginTop:"5px "  }}>
+          <label>Tür:</label>
+          <Input
+            value={attr.type}
+            onChange={(e) =>
+              handleNutritionalValueChange("type", e.target.value, index)
+            }
+          />
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
+        <div style={{ flexBasis: "45%", marginRight: "8px" }}>
+          <label>Karbonhidrat:</label>
+          <Input
+            value={attr.carbohydrateAmount}
+            onChange={(e) =>
+              handleNutritionalValueChange("carbohydrateAmount", e.target.value, index)
+            }
+          />
+        </div>
+        <div style={{ flexBasis: "45%" }}>
+          <label>Protein:</label>
+          <Input
+            value={attr.proteinAmount}
+            onChange={(e) =>
+              handleNutritionalValueChange("proteinAmount", e.target.value, index)
+            }
+          />
+        </div>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: "8px" }}>
+        <div style={{ flexBasis: "45%", marginRight: "8px" }}>
+          <label>Yağ:</label>
+          <Input
+            value={attr.fatAmount}
+            onChange={(e) =>
+              handleNutritionalValueChange("fatAmount", e.target.value, index)
+            }
+          />
+        </div>
+        <div style={{ flexBasis: "45%" }}>
+          <label>Kalori:</label>
+          <Input
+            value={attr.calorieAmount}
+            onChange={(e) =>
+              handleNutritionalValueChange("calorieAmount", e.target.value, index)
+            }
+          />
+        </div>
+      </div>
+      <div style={{ marginTop: "8px", textAlign: "right" }}>
+        <Button
+          icon={<DeleteOutlined />}
+          onClick={() => handleDeleteNutritionalValue(attr.id)}
+          style={{borderColor:"red",color:"red",marginTop:"5px"}}
+        >
+          Besin Değerlerini Sil
+        </Button>
+      </div>
+    </div>
+  ))}
+  <Button
+    type="dashed"
+    onClick={handleAddNutritionalValue}
+    style={{ width: "100%", marginTop: "8px" }}
+    icon={<PlusOutlined />}
+  >
+    Besin Değeri Ekle
+  </Button>
+</Form.Item>
         </Form>
       </Modal>
     </div>
