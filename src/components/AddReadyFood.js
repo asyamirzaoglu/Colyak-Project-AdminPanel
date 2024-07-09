@@ -18,6 +18,7 @@ const AddReadyFood = ({ onClose }) => {
         calorieAmount: "",
       },
     ],
+    imageId: null,
   });
   const [imageUrl, setImageUrl] = useState(null); // resim önizleme için state
 
@@ -170,6 +171,7 @@ const AddReadyFood = ({ onClose }) => {
           action="https://api.colyakdiyabet.com.tr/api/image/addImage"
           headers={{
             Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
           }}
           beforeUpload={beforeUpload}
           onChange={handleImageChange}

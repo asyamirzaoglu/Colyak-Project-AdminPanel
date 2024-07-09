@@ -18,13 +18,14 @@ const AddReceipt = ({ onClose }) => {
     receiptDetails: "",
     nutritionalValuesList: [],
     image: null,
+    imageId: null,
     newReceiptId: null,
   });
   const [types, setTypes] = useState([]);
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await axios.get('https://api.colyakdiyabet.com.tr/api/types');
+        const response = await axios.get('https://api.colyakdiyabet.com.tr/api/receipts/types');
         setTypes(response.data);
       } catch (error) {
         console.error('Error fetching types:', error);
@@ -81,7 +82,17 @@ const AddReceipt = ({ onClose }) => {
           }
         );
         console.log("Response:", response); // Cevabı konsola yazdır
-        console.log("Image uploaded successfully", response);
+        console.log("Image uploaded successfully", response.data);
+        console.log("formdataobj",formDataObj);
+        console.log("formdataiçerik",formData);
+        const imageId = response.data;
+        console.log("imageId",imageId);
+        setFormData((prevData) => ({
+          ...prevData,
+          imageId: imageId, // Görsel kimliğini formData'ya ekle
+        }));
+  
+        return imageId; 
       } catch (error) {
         console.error("Error uploading image", error);
       }
@@ -132,15 +143,10 @@ const AddReceipt = ({ onClose }) => {
   };
 
   const handleSubmit = async () => {
+    const imageId = await uploadImage();
+
     const { ingredients, receiptDetails, nutritionalValuesList, ...otherData } = formData;
-    const formattedNutritionalValues = nutritionalValuesList.map((item) => ({
-      type: item.type,
-      fatAmount: item.fatAmount,
-      carbohydrateAmount: item.carbohydrateAmount,
-      proteinAmount: item.proteinAmount,
-      calorieAmount: item.calorieAmount,
-    }));
-  
+    
     const receiptData = {
       receiptDetails: [formData.receiptDetails],
       receiptItems: ingredients.map((ingredient) => ({
@@ -149,9 +155,20 @@ const AddReceipt = ({ onClose }) => {
         type: capitalizeFirstLetter(ingredient.unit.toLowerCase()),
       })),
       receiptName: formData.recipeName,
-      nutritionalValues:  formattedNutritionalValues,
+      nutritionalValuesList: nutritionalValuesList.map((item) => ({
+        id: 0,
+        unit:item.unit,
+        type: item.type,
+        fatAmount: item.fatAmount,
+        carbohydrateAmount: item.carbohydrateAmount,
+        proteinAmount: item.proteinAmount,
+        calorieAmount: item.calorieAmount,
+      })),
+      imageId: imageId,
     };
-    console.log(receiptData);
+
+    console.log("receiptData",receiptData);
+
     try {
       const response = await axios.post(
         "https://api.colyakdiyabet.com.tr/api/receipts/create",
@@ -159,6 +176,7 @@ const AddReceipt = ({ onClose }) => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+
           },
         }
       );
@@ -168,12 +186,12 @@ const AddReceipt = ({ onClose }) => {
         ...prevData,
         newReceiptId: newReceiptId,
       }));
-      await uploadImage(newReceiptId);
       onClose();
     } catch (error) {
       console.error("Error:", error);
     }
   };
+
 
   return (
     <Form
@@ -284,10 +302,7 @@ const AddReceipt = ({ onClose }) => {
           name="receiptDetails"
         />
       </Form.Item>
-      <AddNutritionalValues
-        formData={formData} // formData'yı AddNutritionalValues bileşenine ilet
-        setFormData={setFormData} // setFormData fonksiyonunu AddNutritionalValues bileşenine ilet
-      />
+      <AddNutritionalValues formData={formData} setFormData={setFormData} />
       <Form.Item name="image" label="Resim">
         <Upload
           accept="image/*"
@@ -297,9 +312,11 @@ const AddReceipt = ({ onClose }) => {
               setFormData((prevData) => ({
                 ...prevData,
                 imagePreview: e.target.result, // Önizleme için resim verisi
+                 image: file,
               }));
             };
             reader.readAsDataURL(file); // Resmi oku ve veri URL'sine dönüştür
+            console.log("file",file);
           }}
           customRequest={() => {}}
           onChange={handleImageChange}

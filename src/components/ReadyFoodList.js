@@ -92,18 +92,6 @@ const ReadyFoodsList = () => {
     setModalVisible(true);
   };
 
-  const showDeleteConfirm = (id) => {
-    Modal.confirm({
-      title: "Hazır Gıda Sil",
-      content: "Bu hazır gıdayı silmek istediğinizden emin misiniz?",
-      okText: "Evet",
-      okType: "danger",
-      cancelText: "Hayır",
-      onOk() {
-        deleteReadyFood(id);
-      },
-    });
-  };
 
   const handleUpdateClick = (record) => {
     setSelectedReadyFood(record);
@@ -116,7 +104,7 @@ const ReadyFoodsList = () => {
   };
 
   const updateFormLayout = {
-    labelCol: { span: 8 },
+    labelCol: { span: 6 },
     wrapperCol: { span: 16 },
   };
 
@@ -162,14 +150,15 @@ const ReadyFoodsList = () => {
       title: "Glutensiz mi",
       dataIndex: "glutenFree",
       key: "glutenFree",
+      align: "center", 
       render: (glutenFree) =>
         glutenFree ? <CheckOutlined /> : <CloseOutlined />,
     },
     {
-      title: "İşlemler",
       key: "actions",
       render: (text, record) => (
-        <Space>
+        <Space style={{ display: "flex",
+          justifyContent: "end" }}>
           <Button onClick={() => handleViewContentClick(record)}>
             İçeriği Görüntüle
           </Button>
@@ -202,19 +191,20 @@ const ReadyFoodsList = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
       >
+        <label style={{fontWeight:"bold"}}>Ürün Adı:</label>
         <p>
-          {selectedReadyFood?.name}
+         {selectedReadyFood?.name}
           <br />
           {selectedReadyFood?.imageId && (
             <div style={{ marginTop: "16px" }}>
-              <p>Görsel:</p>
+              <p style={{fontWeight:"bold"}}>Görsel:</p>
               <Image
                 width={200}
                 src={`https://api.colyakdiyabet.com.tr/api/image/get/${selectedReadyFood.imageId}`}
               />
             </div>
           )}
-          Besin Değerleri:
+           <label style={{fontWeight:"bold"}}>Besin Değerleri:</label>
         </p>
         {selectedReadyFood?.nutritionalValuesList?.map((attr, index) => (
           <div key={index} style={{ marginBottom: "8px" }}>
@@ -222,13 +212,13 @@ const ReadyFoodsList = () => {
               {attr.unit} {attr.type}:
             </span>
             <span style={{ marginRight: "16px" }}>
-              {attr.carbohydrateAmount} gr karbonhidrat
+              {attr.carbohydrateAmount} gr Karbonhidrat
             </span>
             <span style={{ marginRight: "16px" }}>
-              {attr.proteinAmount} gr protein
+              {attr.proteinAmount} gr Protein
             </span>
-            <span style={{ marginRight: "16px" }}>{attr.fatAmount} gr yağ</span>
-            <span>{attr.calorieAmount} kcal</span>
+            <span style={{ marginRight: "16px" }}>{attr.fatAmount} gr Yağ</span>
+            <span>{attr.calorieAmount} Kcal</span>
           </div>
         ))}
       </Modal>
