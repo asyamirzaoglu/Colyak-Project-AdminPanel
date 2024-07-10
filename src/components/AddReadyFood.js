@@ -18,9 +18,10 @@ const AddReadyFood = ({ onClose }) => {
         calorieAmount: "",
       },
     ],
+    image: null,
+    imagePreview: null,
     imageId: null,
   });
-  const [imageUrl, setImageUrl] = useState(null); // resim önizleme için state
 
   const token = localStorage.getItem("token");
 
@@ -59,31 +60,62 @@ const AddReadyFood = ({ onClose }) => {
       nutritionalValuesList: nutritionalValuesList,
     }));
   };
-
   const handleImageChange = (info) => {
     if (info.file.status === "done") {
-      setImageUrl(info.file.response.url); // Set image preview URL
-      message.success(`${info.file.name} dosyası başarıyla yüklendi.`);
+      message.success(`${info.file.name} file uploaded successfully`);
+      setFormData((prevData) => ({
+        ...prevData,
+        image: info.file.originFileObj,
+        imagePreview: info.file.thumbUrl, // Assuming Ant Design provides thumbUrl for preview
+      }));
     } else if (info.file.status === "error") {
-      message.error(`${info.file.name} dosyası yüklenirken bir hata oluştu.`);
+      message.error(`${info.file.name} file upload failed.`);
     }
   };
+  const removeImage = () => {
+    setFormData((prevData) => ({
+      ...prevData,
+      image: null,
+      imagePreview: null,
+    }));
+  };
 
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("Yalnızca JPG/PNG dosyaları yükleyebilirsiniz!");
+  const uploadImage = async () => {
+    if (formData.image) {
+      const formDataObj = new FormData();
+      formDataObj.append("file", formData.image);
+
+      try {
+        const response = await axios.post(
+          "https://api.colyakdiyabet.com.tr/api/image/addImage",
+          formDataObj,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        const imageId = response.data;
+        setFormData((prevData) => ({
+          ...prevData,
+          imageId: imageId,
+        }));
+        return imageId;
+      } catch (error) {
+        console.error("Error uploading image", error);
+      }
     }
-    return isJpgOrPng;
   };
 
   const handleSubmit = async () => {
+    const imageId = await uploadImage();
+
+    const formDataWithImage = {
+      ...formData,
+      imageId: imageId,
+    };
+
     try {
-      const formDataWithImage = {
-        ...formData,
-        imageId: 0, // Replace with appropriate imageId based on backend requirements
-      };
-      console.log("Gönderilen Veri:", formDataWithImage);
       const response = await axios.post(
         "https://api.colyakdiyabet.com.tr/api/barcodes/add",
         formDataWithImage,
@@ -93,17 +125,14 @@ const AddReadyFood = ({ onClose }) => {
           },
         }
       );
-      console.log("Response:", response.data);
       message.success("Hazır yiyecek başarıyla eklendi!");
       onClose();
     } catch (error) {
       console.error("Error:", error);
-      if (error.response) {
-        console.log("Sunucu Hatası Mesajı:", error.response.data);
-      }
       message.error("Hazır yiyecek eklenirken bir hata oluştu.");
     }
   };
+
 
   return (
     <Form name="addReadyFoodsForm" onFinish={handleSubmit}>
@@ -162,33 +191,9 @@ const AddReadyFood = ({ onClose }) => {
           }
         />
       </Form.Item>
-      <Form.Item label="Görsel Yükle">
-        <Upload
-          name="image"
-          listType="picture-card"
-          className="avatar-uploader"
-          showUploadList={false}
-          action="https://api.colyakdiyabet.com.tr/api/image/addImage"
-          headers={{
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          }}
-          beforeUpload={beforeUpload}
-          onChange={handleImageChange}
-        >
-          {imageUrl ? (
-            <Image src={imageUrl} alt="Görsel" style={{ width: "100%" }} />
-          ) : (
-            <div>
-              <UploadOutlined />
-              <div style={{ marginTop: 8 }}>Görsel Yükle</div>
-            </div>
-          )}
-        </Upload>
-      </Form.Item>
       {formData.nutritionalValuesList.map((attribute, index) => (
         <Row key={index} gutter={16}>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               name={`unit${index}`}
               rules={[
@@ -204,7 +209,7 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={12}>
             <Form.Item
               name={`type${index}`}
               rules={[
@@ -219,7 +224,7 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name={`carbohydrateAmount${index}`}
               rules={[
@@ -235,7 +240,7 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name={`proteinAmount${index}`}
               rules={[
@@ -251,7 +256,7 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name={`fatAmount${index}`}
               rules={[
@@ -267,7 +272,7 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col span={6}>
             <Form.Item
               name={`calorieAmount${index}`}
               rules={[
@@ -283,13 +288,49 @@ const AddReadyFood = ({ onClose }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Row>
+          <Col>
             <Button onClick={() => handleRemoveUnit(index)}>Sil</Button>
+            <Button onClick={handleAddUnit}>Besin Değeri Ekle</Button>
           </Col>
+          </Row>
         </Row>
       ))}
-      <Button onClick={handleAddUnit}>Besin Değeri Ekle</Button>
       <Form.Item>
+      <Form.Item>
+  <Upload
+    accept="image/*"
+    beforeUpload={(file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData((prevData) => ({
+          ...prevData,
+          imagePreview: e.target.result,
+          image: file,
+        }));
+      };
+      reader.readAsDataURL(file);
+      return false; // Prevent Ant Design from uploading automatically
+    }}
+    onChange={handleImageChange}
+    showUploadList={false}
+  >
+    {formData.imagePreview ? (
+      <div>
+        <img
+          src={formData.imagePreview}
+          alt="Resim Önizleme"
+          style={{ maxWidth: "100%", marginTop: "10px" }}
+        />
+        <Button onClick={removeImage} style={{ marginTop: "10px" }}>
+          Resmi Sil
+        </Button>
+      </div>
+    ) : (
+      <Button icon={<UploadOutlined />}>Resim Yükle</Button>
+    )}
+  </Upload>
+</Form.Item>
         <Row justify="center">
           <Button
             type="primary"

@@ -7,7 +7,8 @@ import ReadyFoodsList from "../components/ReadyFoodList";
 import AddReadyFoods from "../components/AddReadyFood";
 import BolusRapor from "../components/BolusRapor";
 import Comments from "../components/Comments";
-import QuizViewer from "../components/QuizViewer";
+import QuizViewer from "../components/QuizViewer";  
+import Users from "../components/Users";
 
 const { Sider, Content } = Layout;
 
@@ -17,13 +18,14 @@ const HomePage = () => {
   const [showMealList, setShowMealList] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showQuizViewer, setShowQuizViewer] = useState(false);
-
+  const [showUsers, setShowUsers] = useState(false);
   const handleRecipeFormOpen = () => {
     setShowRecipeForm(true);
     setShowReadyFoodForm(false);
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(false);
+    setShowUsers(false);
   };
 
   const handleReadyFoodFormOpen = () => {
@@ -32,6 +34,7 @@ const HomePage = () => {
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(false);
+    setShowUsers(false);
   };
 
   const handleRecipeListOpen = () => {
@@ -40,6 +43,7 @@ const HomePage = () => {
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(false);
+    setShowUsers(false);
   };
 
   const handleMealListOpen = () => {
@@ -48,6 +52,7 @@ const HomePage = () => {
     setShowMealList(true);
     setShowComments(false);
     setShowQuizViewer(false);
+    setShowUsers(false);
   };
 
   const handleCommentsOpen = () => {
@@ -56,6 +61,7 @@ const HomePage = () => {
     setShowMealList(false);
     setShowComments(true);
     setShowQuizViewer(false);
+    setShowUsers(false);
   };
 
   const handleQuizViewerOpen = () => {
@@ -64,7 +70,17 @@ const HomePage = () => {
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(true);
+    setShowUsers(false);
   };
+  const handleUsersOpen = () => {
+    setShowRecipeForm(false);
+    setShowReadyFoodForm(false);
+    setShowMealList(false);
+    setShowComments(false);
+    setShowQuizViewer(false);
+    setShowUsers(true);
+  };
+  
 
   return (
     <Layout>
@@ -93,6 +109,9 @@ const HomePage = () => {
           <Menu.Item key="6" onClick={handleQuizViewerOpen}>
             Quiz Viewer
           </Menu.Item>
+          <Menu.Item key="7" onClick={handleUsersOpen}>
+            Kullanıcılar
+          </Menu.Item>
         </Menu>
       </Sider>
       <Layout style={{ padding: "24px" }}>
@@ -114,7 +133,8 @@ const HomePage = () => {
             !showReadyFoodForm &&
             !showMealList &&
             !showComments &&
-            !showQuizViewer && (
+            !showQuizViewer &&
+            !showUsers && (
               <>
                 <Listeler />
                 <ReadyFoodsList />
@@ -125,6 +145,7 @@ const HomePage = () => {
           )}
           {showComments && <Comments />}
           {showQuizViewer && <QuizViewer />}
+          {showUsers && <Users/>}
         </Content>
       </Layout>
     </Layout>

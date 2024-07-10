@@ -25,8 +25,11 @@ const AddReceipt = ({ onClose }) => {
   useEffect(() => {
     const fetchTypes = async () => {
       try {
-        const response = await axios.get('https://api.colyakdiyabet.com.tr/api/receipts/types');
-        setTypes(response.data);
+        const response = await axios.get('https://api.colyakdiyabet.com.tr/api/receipts/types', {
+          headers: {
+            Authorization: `Bearer ${token}`, // Authorization başlığını ekle
+          },
+        });        setTypes(response.data);
       } catch (error) {
         console.error('Error fetching types:', error);
       }
@@ -129,15 +132,6 @@ const AddReceipt = ({ onClose }) => {
     }));
   };
 
-  const handleNutritionalChange = (name, value) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      nutritionalValues: {
-        ...prevData.nutritionalValues,
-        [name]: value,
-      },
-    }));
-  };
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
@@ -156,7 +150,6 @@ const AddReceipt = ({ onClose }) => {
       })),
       receiptName: formData.recipeName,
       nutritionalValuesList: nutritionalValuesList.map((item) => ({
-        id: 0,
         unit:item.unit,
         type: item.type,
         fatAmount: item.fatAmount,

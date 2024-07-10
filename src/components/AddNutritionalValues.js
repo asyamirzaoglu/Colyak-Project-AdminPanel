@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Form, Input, Button, Row, Col } from "antd";
 
 const AddNutritionalValues = ({ formData, setFormData }) => {
-  const [localFormData, setLocalFormData] = useState({
+  const [localFormData, setLocalFormData] = useState([{
     unit: "",
     type: "",
     calorieAmount: "",
     carbohydrateAmount: "",
     proteinAmount: "",
     fatAmount: "",
-  });
+  }]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -24,14 +24,14 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
       ...prevData,
       nutritionalValuesList: [...prevData.nutritionalValuesList, localFormData],
     }));
-    setLocalFormData({
+    setLocalFormData([{
       unit: localFormData.unit,
       type: localFormData.type,
       calorieAmount: localFormData.calorieAmount,
       carbohydrateAmount: localFormData.carbohydrateAmount,
       proteinAmount: localFormData.proteinAmount,
       fatAmount: localFormData.fatAmount,
-    });
+    }]);
   };
 
   const handleRemove = (indexToRemove) => {
@@ -48,20 +48,6 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
       <h4 style={{ marginBottom: "10px" }}>Besin Değerleri</h4>
       <Form>
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="unit"
-              label="Ölçü Birimi"
-              extra="Gireceğiniz besin değerlerinin hangi ölçüye ait olduğunu yazınız. Örn: 100 gram, 1 yemek kaşığı"
-            >
-              <Input
-                placeholder="Ölçü Birimi Giriniz"
-                name="unit"
-                value={localFormData.unit}
-                onChange={handleInputChange}
-              />
-            </Form.Item>
-          </Col>
           <Col span={12}>
             <Form.Item
               name="type"

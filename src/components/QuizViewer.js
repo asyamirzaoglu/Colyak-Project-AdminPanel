@@ -14,12 +14,12 @@ const QuizViewer = () => {
     questionList: [
       {
         question: "",
-        choicesList:[{
-          choice1: "",
-          choice2: "",
-          choice3: "",
-          choice4:"",
-        }],
+        choicesList:[
+          {choice1: ""},
+          {choice2: ""},
+          {choice3: ""},
+          {choice4:""},
+        ],
         correctAnswer: "",
       },
     ],
@@ -32,18 +32,27 @@ const QuizViewer = () => {
   const token = localStorage.getItem("token");
   const fetchQuizzes = async () => {
     try {
-      const response = await axios.get(
-        "https://api.colyakdiyabet.com.tr/api/quiz/all",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      console.log("API response:", response.data); 
-      setQuizzes(response.data);
-      if (response.data.length > 0) {
-        const initialQuiz = response.data[0];
+      const response = await axios.get("https://api.colyakdiyabet.com.tr/api/quiz/all", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const quizzesWithImages = await Promise.all(response.data.map(async (quiz) => {
+        const updatedQuestionList = await Promise.all(quiz.questionList.map(async (question) => {
+          const updatedChoicesList = await Promise.all(question.choicesList.map(async (choice) => {
+            if (choice.imageId) {
+              const imageUrl = await fetchImageUrl(choice);
+              return { ...choice, imageUrl };
+            }
+            return choice;
+          }));
+          return { ...question, choicesList: updatedChoicesList };
+        }));
+        return { ...quiz, questionList: updatedQuestionList };
+      }));
+      setQuizzes(quizzesWithImages);
+      if (quizzesWithImages.length > 0) {
+        const initialQuiz = quizzesWithImages[0];
         setSelectedQuiz(initialQuiz);
         setSelectedQuizId(initialQuiz.id);
       }
@@ -51,7 +60,7 @@ const QuizViewer = () => {
       console.error("Error fetching quizzes:", error.response || error.message);
     }
   };
-
+  
   useEffect(() => {
     fetchQuizzes();
   }, []);
@@ -61,41 +70,76 @@ const QuizViewer = () => {
     setSelectedQuiz(quiz);
     setSelectedQuizId(value);
   };
-  const handleAddInputChange = (e, index) => {
+  const handleAddInputChange = (e, questionIndex, choiceIndex) => {
     const { name, value } = e.target;
     const updatedQuestions = [...newQuizData.questionList];
-    updatedQuestions[index] = { ...updatedQuestions[index], [name]: value };
+    
+    if (name === "question" || name === "correctAnswer") {
+      updatedQuestions[questionIndex] = {
+        ...updatedQuestions[questionIndex],
+        [name]: value,
+      };
+    } else {
+      // Update the correct choice index based on the name
+      const updatedChoicesList = [...updatedQuestions[questionIndex].choicesList];
+      updatedChoicesList[choiceIndex] = { ...updatedChoicesList[choiceIndex], [name]: value };
+      updatedQuestions[questionIndex].choicesList = updatedChoicesList;
+    }
+    
     setNewQuizData({ ...newQuizData, questionList: updatedQuestions });
   };
-
+  
+  
   const handleNewAddQuiz = async () => {
     try {
-      await axios.post("https://api.colyakdiyabet.com.tr/api/quiz/add", newQuizData);
+      const formattedQuizData = {
+        ...newQuizData,
+        questionList: newQuizData.questionList.map((question) => ({
+          ...question,
+          choicesList: [
+            { choice: question.choicesList[0].choice1 },
+            { choice: question.choicesList[0].choice2 },
+            { choice: question.choicesList[0].choice3 },
+            { choice: question.choicesList[0].choice4 },
+          ],
+        })),
+      };
+  
+      const response = await axios.post("https://api.colyakdiyabet.com.tr/api/quiz/add", formattedQuizData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setModalVisible(false);
       setNewQuizData({
         topicName: "",
         questionList: [
           {
             question: "",
-            choicesList:[{ 
-              choice1: "",
-              choice2: "",
-              choice3: "",
-              choice4:"",
-            }],
+            choicesList: [
+              { choice1: ""}, {choice2: ""}, {choice3: ""}, {choice4: "" },
+            ],
             correctAnswer: "",
           },
         ],
       });
       fetchQuizzes();
+      console.log("newquizdata", newQuizData);
     } catch (error) {
       console.error("Error adding quiz:", error);
+      console.log("newquizdata", newQuizData);
     }
   };
+  
   const handleNewDeleteQuiz = async () => {
     try {
-      await axios.delete(
-        `https://api.colyakdiyabet.com.tr/api/quiz/delete/${quizToDelete.id}`
+      const response = await axios.delete(
+        `https://api.colyakdiyabet.com.tr/api/quiz/delete/${quizToDelete.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       // Silinen quiz yerine otomatik olarak gelen quiz'i seç
       const remainingQuizzes = quizzes.filter(
@@ -135,12 +179,35 @@ const QuizViewer = () => {
     setUpdateModalVisible(false);
     setUpdatedQuizData(null);
   };
+  const fetchImageUrl = async (choice) => {
+    try {
+      const response = await axios.get(
+        `https://api.colyakdiyabet.com.tr/api/image/get/${choice.imageId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data.url;
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching image URL:", error);
+      return null;
+    }
+  };
+  
 
   const handleUpdateQuiz = async () => {
     try {
-      await axios.put(
-        `https://api.colyakdiyabet.com.tr/quiz/${selectedQuizId}`,
-        updatedQuizData
+      const response = await axios.put(
+        `https://api.colyakdiyabet.com.tr/api/quiz/put/${selectedQuizId}`,
+        updatedQuizData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
       setUpdateModalVisible(false);
       setSelectedQuiz(updatedQuizData);
@@ -150,33 +217,40 @@ const QuizViewer = () => {
     }
   };
 
-  const handleInputChange = (e, index) => {
+  const handleInputChange = (e, questionIndex, choiceIndex) => {
     const { name, value } = e.target;
     if (updatedQuizData && updatedQuizData.questionList) {
-      const updatedQuestions = updatedQuizData.questionList.map(
-        (question, i) => {
-          if (i === index) {
-            return { ...question, [name]: value };
-          }
-          return question;
+      const updatedQuestions = updatedQuizData.questionList.map((question, i) => {
+        if (i === questionIndex) {
+          const updatedChoicesList = question.choicesList.map((choice, j) => {
+            if (j === choiceIndex) {
+              return { ...choice, [name]: value };
+            }
+            return choice;
+          });
+          return { ...question, choicesList: updatedChoicesList };
+          
         }
-      );
+        return question;
+      });
+    
       setUpdatedQuizData((prevData) => ({
         ...prevData,
         questionList: updatedQuestions,
       }));
     }
   };
+  
 
   const handleAddQuestion = () => {
     const newQuestion = {
       question: "",
-      choicesList:[{
-        choice1: "",
-        choice2: "",
-        choice3: "",
-        choice4:"",
-      }],
+      choicesList:[
+        {choice1: ""},
+        {choice2: ""},
+        {choice3: ""},
+        {choice4: ""},
+      ],
       correctAnswer: "",
     };
     setUpdatedQuizData((prevData) => ({
@@ -195,21 +269,19 @@ const QuizViewer = () => {
   };
 
   const handleNewAddQuestion = () => {
+    const newQuestion = {
+      question: "",
+      choicesList: [
+        { id: 0, choice: "" },
+        { id: 1, choice: "" },
+        { id: 2, choice: "" },
+        { id: 3, choice: "" },
+      ],
+      correctAnswer: "",
+    };
     setNewQuizData({
       ...newQuizData,
-      questionList: [
-        ...newQuizData.questionList,
-        {
-          question: "",
-          choicesList:[{
-            choice1: "",
-            choice2: "",
-            choice3: "",
-            choice4: "",
-          }],
-          correctAnswer: "",
-        },
-      ],
+      questionList: [...newQuizData.questionList, newQuestion],
     });
   };
 
@@ -266,23 +338,35 @@ const QuizViewer = () => {
       </Select>
 
       {selectedQuiz && (
-        <div style={{ marginTop: "20px" }}>
-          <h2>{selectedQuiz.topicName}</h2>
-          {selectedQuiz.questionList.map((question, index) => (
-            <Card key={question.id} style={{ marginTop: "10px" }}>
-              <p>{question.question}</p>
-              <ul>
+  <div style={{ marginTop: "20px" }}>
+    <h2>{selectedQuiz.topicName}</h2>
+    {selectedQuiz.questionList.map((question, index) => (
+      <Card key={question.id} style={{ marginTop: "10px" }}>
+        <p>
+                <span style={{ fontWeight: "bold" }}>Soru {index + 1}:</span> {question.question}
+              </p> 
+        <div>
           {question.choicesList.map((choice, choiceIndex) => (
-            <li key={choice.id}>
-              {String.fromCharCode(65 + choiceIndex)} - {choice.choice}
-            </li>
-          ))}
-        </ul>
-              <p>Doğru Cevap: {question.correctAnswer}</p>
-            </Card>
+            <div key={choice.id} style={{ marginBottom: "10px" }}>
+               <p>
+                <span style={{ fontWeight: "bold" }}>{String.fromCharCode(65 + choiceIndex)}</span> - {choice.choice}
+              </p>
+              {choice.imageId && (
+                <img
+                  src={`https://api.colyakdiyabet.com.tr/api/image/get/${choice.imageId}`}
+                  alt={`Choice ${choiceIndex + 1}`}
+                  style={{ maxWidth: '200px', maxHeight: '200px', marginTop: '10px' }}
+                />
+              )}
+            </div>
           ))}
         </div>
-      )}
+        <p><span style={{ fontWeight: "bold" }}>Doğru Cevap:</span>  {question.correctAnswer}</p>
+      </Card>
+    ))}
+  </div>
+)}
+
 
       <Modal
         title="Yeni Quiz Ekle"
@@ -317,28 +401,28 @@ const QuizViewer = () => {
             <Input
               placeholder="Seçenek 1"
               name="choice1"
-              value={question.choicesList.choice1}
+              value={question.choicesList.choice}
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
             <Input
               placeholder="Seçenek 2"
               name="choice2"
-              value={question.choicesList.choice2}
+              value={question.choicesList.choice}
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
             <Input
               placeholder="Seçenek 3"
               name="choice3"
-              value={question.choicesList.choice3}
+              value={question.choicesList.choice}
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
              <Input
               placeholder="Seçenek 4"
               name="choice4"
-              value={question.choicesList.choice4}
+              value={question.choicesList.choice}
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
@@ -420,28 +504,28 @@ const QuizViewer = () => {
                 <Input
                   placeholder="Seçenek 1"
                   name="choice1"
-                  value={question.choicesList.choice1}
+                  value={question.choicesList.choice}
                   onChange={(e) => handleInputChange(e, index)}
                   style={{ marginBottom: "5px" }}
                 />
                 <Input
                   placeholder="Seçenek 2"
                   name="choice2"
-                  value={question.choicesList.choice2}
+                  value={question.choicesList.choice}
                   onChange={(e) => handleInputChange(e, index)}
                   style={{ marginBottom: "5px" }}
                 />
                 <Input
                   placeholder="Seçenek 3"
                   name="choice3"
-                  value={question.choicesList.choice3}
+                  value={question.choicesList.choice}
                   onChange={(e) => handleInputChange(e, index)}
                   style={{ marginBottom: "5px" }}
                 />
                 <Input
                   placeholder="Seçenek 4"
                   name="choice4"
-                  value={question.choicesList.choice4}
+                  value={question.choicesList.choice}
                   onChange={(e) => handleInputChange(e, index)}
                   style={{ marginBottom: "5px" }}
                 />
