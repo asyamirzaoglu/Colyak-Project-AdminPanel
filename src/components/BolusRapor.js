@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, DatePicker, Space, Input, Button, Modal, Select } from "antd";
+import { Table, DatePicker, Space, Input, Button, Modal, Select, Row } from "antd";
 import axios from "axios";
 import moment from "moment";
 import "moment/locale/tr"; // Türkçe locale eklemek için
@@ -210,13 +210,13 @@ const BolusRapor = ({ onClose }) => {
   ];
 
   return (
-    <div>
-      <h2>Öğün Listesi ve Bolus Değeri</h2>
+    <div style={{width:"max-content"}}>
+      <h1 style={{textAlign:"center",fontSize: "24px"}}>Öğün Listesi ve Bolus Değeri</h1>
       <Space direction="vertical" style={{ marginBottom: 16 }}>
-        <Select
-          placeholder="Select a user"
+        <Row><Select
+          placeholder="Kullanıcı Seçiniz"
           onChange={(value) => setSelectedUser(value)}
-          style={{ width: 200 }}
+          style={{ width: 300,marginRight:"20px" }}
         >
           {userList.map((user) => (
             <Option key={user.email} value={user.email}>
@@ -228,10 +228,11 @@ const BolusRapor = ({ onClose }) => {
         <Button
           type="primary"
           onClick={fetchData}
-          style={{ backgroundColor: "#ef7927", borderColor: "#ef7927" }}
+          style={{ backgroundColor: "#ef7927", borderColor: "#ef7927", marginLeft:"390px"}}
         >
-          List
+          Listele
         </Button>
+        </Row>
       </Space>
       <Table dataSource={mealData} columns={columns} />
       <Modal

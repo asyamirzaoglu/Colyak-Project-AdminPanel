@@ -1,0 +1,71 @@
+
+
+.bg-gradient-to-b {
+    background: linear-gradient(to bottom, #ffffcc, #e47d28, #ffffcc);
+    height: 100vh; /* Ekran yüksekliği kadar kapla */
+    width: 100vw; /* Ekran genişliği kadar kapla */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .w-96 {
+    width: 24rem; /* 96 piksel = 24 rem */
+  }
+  
+  .p-10 {
+    padding: 2.5rem; /* 10 piksel = 2.5 rem */
+  }
+  
+  .text-3xl {
+    font-size: 1.875rem; /* 3xl için genelde 1.875 rem kullanılır */
+    color: white;
+  }
+  
+  .font-bold {
+    font-weight: 700; /* Kalın font */
+  }
+  
+  .mb-7 {
+    margin-bottom: 1.75rem; /* 7 piksel = 1.75 rem */
+  }
+  
+  .text-center {
+    text-align: center; /* Ortala */
+  }
+  
+  .flex {
+    display: flex; /* Flex kutusu */
+  }
+  
+  .justify-center {
+    justify-content: center; /* Ortala */
+  }
+  
+  .items-center {
+    align-items: center; /* Ortala */
+  }
+  
+  .w-full {
+    width: 100%; /* Tam genişlik */
+  }
+
+.header {
+    position: fixed;
+    width: 100%;
+    z-index: 1000; /* Ensure it appears above other content */
+  }
+  
+  .logo {
+    width: 120px;
+    height: 31px;
+    background: "#ef7927";
+    margin: 16px 24px 16px 0;
+    float: left;
+  }
+  
+  .menu {
+    line-height: 64px; /* Adjust the height as needed */
+  }
+  
+  

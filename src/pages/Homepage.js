@@ -13,33 +13,12 @@ import Users from "../components/Users";
 const { Sider, Content } = Layout;
 
 const HomePage = () => {
-  const [showRecipeForm, setShowRecipeForm] = useState(false);
-  const [showReadyFoodForm, setShowReadyFoodForm] = useState(false);
   const [showMealList, setShowMealList] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showQuizViewer, setShowQuizViewer] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
-  const handleRecipeFormOpen = () => {
-    setShowRecipeForm(true);
-    setShowReadyFoodForm(false);
-    setShowMealList(false);
-    setShowComments(false);
-    setShowQuizViewer(false);
-    setShowUsers(false);
-  };
-
-  const handleReadyFoodFormOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(true);
-    setShowMealList(false);
-    setShowComments(false);
-    setShowQuizViewer(false);
-    setShowUsers(false);
-  };
 
   const handleRecipeListOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(false);
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(false);
@@ -47,8 +26,6 @@ const HomePage = () => {
   };
 
   const handleMealListOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(false);
     setShowMealList(true);
     setShowComments(false);
     setShowQuizViewer(false);
@@ -56,8 +33,6 @@ const HomePage = () => {
   };
 
   const handleCommentsOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(false);
     setShowMealList(false);
     setShowComments(true);
     setShowQuizViewer(false);
@@ -65,16 +40,12 @@ const HomePage = () => {
   };
 
   const handleQuizViewerOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(false);
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(true);
     setShowUsers(false);
   };
   const handleUsersOpen = () => {
-    setShowRecipeForm(false);
-    setShowReadyFoodForm(false);
     setShowMealList(false);
     setShowComments(false);
     setShowQuizViewer(false);
@@ -84,32 +55,32 @@ const HomePage = () => {
 
   return (
     <Layout>
-      <Sider width={250} style={{ background: "#fff" }}>
-        <div style={{ textAlign: "center", marginBottom: "20px" }}></div>
+      <Sider width={250} style={{ background: "#dadeea"}}>
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+        <img
+            src="colyak.jpeg"
+            alt="Menu Image"
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </div>
         <Menu
           mode="inline"
           defaultSelectedKeys={["1"]}
-          style={{ height: "100%", borderRight: 0 }}
+          style={{ height: "100%", borderRight: 0,background:"#dadaea" }}
         >
           <Menu.Item key="1" onClick={handleRecipeListOpen}>
             <Link to="">Tarifler ve Hazır Gıdalar Listesi</Link>
           </Menu.Item>
-          <Menu.Item key="2" onClick={handleRecipeFormOpen}>
-            Tarif Ekle
-          </Menu.Item>
-          <Menu.Item key="3" onClick={handleReadyFoodFormOpen}>
-            Hazır Gıda Ekle
-          </Menu.Item>
-          <Menu.Item key="4" onClick={handleMealListOpen}>
+          <Menu.Item key="2" onClick={handleMealListOpen}>
             Raporlar
           </Menu.Item>
-          <Menu.Item key="5" onClick={handleCommentsOpen}>
+          <Menu.Item key="3" onClick={handleCommentsOpen}>
             Yorumlar
           </Menu.Item>
-          <Menu.Item key="6" onClick={handleQuizViewerOpen}>
+          <Menu.Item key="4" onClick={handleQuizViewerOpen}>
             Quiz Viewer
           </Menu.Item>
-          <Menu.Item key="7" onClick={handleUsersOpen}>
+          <Menu.Item key="5" onClick={handleUsersOpen}>
             Kullanıcılar
           </Menu.Item>
         </Menu>
@@ -123,15 +94,7 @@ const HomePage = () => {
             minHeight: 280,
           }}
         >
-          {showRecipeForm && (
-            <AddReceipt onClose={() => setShowRecipeForm(false)} />
-          )}
-          {showReadyFoodForm && (
-            <AddReadyFoods onClose={() => setShowReadyFoodForm(false)} />
-          )}
-          {!showRecipeForm &&
-            !showReadyFoodForm &&
-            !showMealList &&
+          {!showMealList &&
             !showComments &&
             !showQuizViewer &&
             !showUsers && (

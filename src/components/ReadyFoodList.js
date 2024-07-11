@@ -191,12 +191,11 @@ const ReadyFoodsList = () => {
         onCancel={() => setModalVisible(false)}
         footer={null}
       >
-        <label style={{fontWeight:"bold"}}>Ürün Adı:</label>
-        <p>
+        <label style={{fontWeight:"bold"}}>Ürün Adı: </label>
          {selectedReadyFood?.name}
           <br />
           {selectedReadyFood?.imageId && (
-            <div style={{ marginTop: "16px" }}>
+            <div style={{ marginTop: "16px",marginBottom:"30px" }}>
               <p style={{fontWeight:"bold"}}>Görsel:</p>
               <Image
                 width={200}
@@ -204,10 +203,9 @@ const ReadyFoodsList = () => {
               />
             </div>
           )}
-           <label style={{fontWeight:"bold"}}>Besin Değerleri:</label>
-        </p>
+           <label style={{fontWeight:"bold"}}>-Besin Değerleri-</label>
         {selectedReadyFood?.nutritionalValuesList?.map((attr, index) => (
-          <div key={index} style={{ marginBottom: "8px" }}>
+          <div key={index} style={{ marginBottom: "8px",marginTop:"8px" }}>
             <span style={{ marginRight: "16px", fontWeight: "bold" }}>
               {attr.unit} {attr.type}:
             </span>
@@ -262,7 +260,7 @@ const ReadyFoodsList = () => {
           </Form.Item>
           <Form.Item label="Besin Değerleri">
   {updateNutritionalValues.map((attr, index) => (
-    <div key={index} style={{ marginBottom: "16px" }}>
+    <div key={index} style={{ marginBottom: "16px"}}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <div style={{ flexBasis: "45%", marginRight: "8px",marginTop:"5px " }}>
           <label>Birim:</label>

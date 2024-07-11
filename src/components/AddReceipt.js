@@ -296,7 +296,7 @@ const AddReceipt = ({ onClose }) => {
         />
       </Form.Item>
       <AddNutritionalValues formData={formData} setFormData={setFormData} />
-      <Form.Item name="image" label="Resim">
+      <Form.Item name="image" label="Resim:">
         <Upload
           accept="image/*"
           beforeUpload={(file) => {
@@ -320,9 +320,9 @@ const AddReceipt = ({ onClose }) => {
               <img
                 src={formData.imagePreview}
                 alt="Resim Önizleme"
-                style={{ maxWidth: "100%", marginTop: "10px" }}
+                style={{ width:"300px", marginTop: "10px" }}
               />
-              <Button onClick={removeImage} style={{ marginTop: "10px" }}>
+              <Button onClick={removeImage} style={{ marginLeft:"400px"}}>
                 Resmi Sil
               </Button>
             </div>

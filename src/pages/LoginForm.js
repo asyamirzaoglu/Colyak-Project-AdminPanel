@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Input, Button } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import axios from "axios";
+import "./LoginForm.css";
 
 const LoginForm = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
@@ -36,7 +37,8 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   return (
     <div className="bg-gradient-to-b from-yellow-100 via-orange-300 to-yellow-100 h-screen flex justify-center items-center">
-      <div className=" w-96 h-[450px] p-10">
+      <div className=" w-96 p-10">
+      <img src="colyak.jpeg" alt="Login Image" style={{ maxWidth: "80%", height: "auto",borderRadius:"50px",marginLeft:"30px"}} />
         <h1 className="text-3xl text-center font-bold">Yönetici Girişi</h1>
         <div className="mb-7"></div>
         <div>
@@ -64,13 +66,14 @@ const LoginForm = ({ setIsLoggedIn }) => {
                   alignItems: "center",
                 }}
               >
-                <Form.Item style={{ margin: 0 }}>
+                <Form.Item style={{ margin: 0}}>
                   <Button
                     type="primary"
                     htmlType="submit"
                     style={{
                       backgroundColor: "#ef7927",
-                      borderColor: "#ef7927",
+                      borderColor: "white",
+                      marginLeft:"110px"
                     }}
                   >
                     Giriş Yap

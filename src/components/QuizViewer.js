@@ -300,31 +300,26 @@ const QuizViewer = () => {
           right: "20px",
           zIndex: "9999",
         }}
-      >
+      > <Button
+      onClick={() => confirmDelete(selectedQuiz)}
+      style={{ marginBottom: "10px",borderColor:"#ef7927",color:"#ef7927" }}
+    >
+      Quiz Sil
+    </Button>
         <Button
-          type="primary"
-          onClick={() => setModalVisible(true)}
-          style={{ marginRight: "10px", marginBottom: "10px" }}
-        >
-          Quiz Ekle
-        </Button>
-        <Button
-          type="danger"
-          onClick={() => confirmDelete(selectedQuiz)}
-          style={{ marginBottom: "10px" }}
-        >
-          Quiz Sil
-        </Button>
-        <Button
-          type="default"
           onClick={handleUpdateButtonClick}
-          style={{ marginBottom: "10px", marginLeft: "10px" }}
+          style={{ marginBottom: "10px", marginLeft: "10px",borderColor:"#ef7927", color:"#ef7927"}}
         >
           Quiz Güncelle
         </Button>
+        <Button
+          onClick={() => setModalVisible(true)}
+          style={{ marginLeft: "10px", marginBottom: "10px",borderColor:"#ef7927",color:"#ef7927" }}
+        >
+          Quiz Ekle
+        </Button>
       </div>
-
-      <h1>Quiz Seçin:</h1>
+     <div style={{textAlign:"center"}}><h1 style={{textAlign:"center",fontSize: "24px"}}>Quiz Seçin:</h1>
       <Select
         value={selectedQuizId}
         style={{ width: 300 }}
@@ -335,7 +330,7 @@ const QuizViewer = () => {
             {quiz.topicName}
           </Option>
         ))}
-      </Select>
+      </Select></div> 
 
       {selectedQuiz && (
   <div style={{ marginTop: "20px" }}>
@@ -376,11 +371,11 @@ const QuizViewer = () => {
           <Button key="cancel" onClick={handleModalCancel}>
             İptal
           </Button>,
-          <Button key="submit" type="primary" onClick={handleNewAddQuiz}>
+          <Button key="submit" type="primary" onClick={handleNewAddQuiz} style={{backgroundColor: "#ef7927", borderColor: "#ef7927"}}>
             Oluştur
           </Button>,
         ]}
-      >
+      ><label>Quiz Başlığı:</label>
         <Input
           placeholder="Quiz Başlığı"
           value={newQuizData.topicName}
@@ -391,6 +386,7 @@ const QuizViewer = () => {
         />
         {newQuizData.questionList.map((question, index) => (
           <div key={index} style={{ marginBottom: "10px" }}>
+            <label>Soru:</label>
             <Input
               placeholder={`Soru ${index + 1}`}
               name="question"
@@ -398,6 +394,7 @@ const QuizViewer = () => {
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
+            <label>Şıklar:</label>
             <Input
               placeholder="Seçenek 1"
               name="choice1"
@@ -426,6 +423,7 @@ const QuizViewer = () => {
               onChange={(e) => handleAddInputChange(e, index)}
               style={{ marginBottom: "5px" }}
             />
+            <label>Doğru Cevap:</label>
             <Input
               placeholder="Doğru Cevap"
               name="correctAnswer"
@@ -434,9 +432,8 @@ const QuizViewer = () => {
               style={{ marginBottom: "10px" }}
             />
             <Button
-              type="danger"
               onClick={() => handleNewDeleteQuestion(index)}
-            >
+            danger>
               Soruyu Sil
             </Button>
           </div>
@@ -458,7 +455,7 @@ const QuizViewer = () => {
           <Button key="cancel" onClick={handleModalCancel}>
             İptal
           </Button>,
-          <Button key="delete" type="danger" onClick={handleNewDeleteQuiz}>
+          <Button key="delete" onClick={handleNewDeleteQuiz}danger>
             Sil
           </Button>,
         ]}
@@ -474,7 +471,7 @@ const QuizViewer = () => {
           <Button key="cancel" onClick={handleUpdateModalCancel}>
             İptal
           </Button>,
-          <Button key="update" type="primary" onClick={handleUpdateQuiz}>
+          <Button key="update" type="primary" onClick={handleUpdateQuiz}style={{ backgroundColor: "#ef7927", borderColor: "#ef7927" }}>
             Güncelle
           </Button>,
         ]}
@@ -537,9 +534,8 @@ const QuizViewer = () => {
                   style={{ marginBottom: "10px" }}
                 />
                 <Button
-                  type="danger"
                   onClick={() => handleDeleteQuestion(index)}
-                >
+                danger>
                   Soruyu Sil
                 </Button>
               </div>

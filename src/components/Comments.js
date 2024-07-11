@@ -52,10 +52,10 @@ const Comments = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>Select Receipt</h1>
+      <div style={{textAlign:"center"}}> <h1 style={{textAlign:"center",fontSize: "24px"}}>Tarif Yorumları</h1>
       <Select
-        style={{ width: 200 }}
-        placeholder="Select a receipt"
+        style={{ width: 200}}
+        placeholder="Tarif seçiniz"
         onChange={handleReceiptSelect}
       >
         {receipts.map((receipt) => (
@@ -63,7 +63,8 @@ const Comments = () => {
             {receipt.receiptName}
           </Option>
         ))}
-      </Select>
+      </Select></div>
+     
       {selectedReceipt && (
         <div style={{ marginTop: "20px" }}>
           <h2>Yorumlar</h2>

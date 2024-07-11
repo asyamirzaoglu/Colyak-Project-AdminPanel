@@ -439,11 +439,12 @@ const Listeler = () => {
         Tarifler ve Hazır Gıdalar Listesi
       </h2>
       <Button
-        style={{ backgroundColor: "#ef7925" }}
+        style={{ backgroundColor: "#ef7925",borderRadius:"50px",marginBottom:"10px",height:"35px"}}
         type="primary"
         icon={<PlusOutlined />}
-        onClick={handleAddNew}
-      />
+        onClick={handleAddNew}>
+          Yeni Ürün Ekle
+        </Button>
       <Table dataSource={receipts} columns={columns} />
       <Modal
         title="Tarif Detayları"
@@ -462,7 +463,7 @@ const Listeler = () => {
         <div style={{ textAlign: "center" }}>
           <p
             style={{
-              fontSize: "17px",
+              fontSize: "18px",
               fontWeight: "-moz-initial",
               marginBottom: "10px",
             }}

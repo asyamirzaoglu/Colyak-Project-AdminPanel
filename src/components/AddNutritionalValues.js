@@ -51,7 +51,7 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
           <Col span={12}>
             <Form.Item
               name="type"
-              label="Tür"
+              label="Ölçü Birimi"
               extra="Gireceğiniz besin değerlerinin hangi ölçüye ait olduğunu yazınız. Örn: 100 gram, 1 yemek kaşığı"
             >
               <Input
@@ -73,7 +73,7 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item name="carbohydrateAmount" label="Karbonhidrat (g)">
               <Input
                 type="number"
@@ -84,7 +84,7 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item name="proteinAmount" label="Protein (g)">
               <Input
                 type="number"
@@ -95,7 +95,7 @@ const AddNutritionalValues = ({ formData, setFormData }) => {
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col span={8}>
             <Form.Item name="fatAmount" label="Yağ (g)">
               <Input
                 type="number"

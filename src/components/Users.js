@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Button, Card, Row, Typography, Modal } from 'antd';
-import { DeleteOutlined, MinusCircleOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -95,51 +94,49 @@ const Users = () => {
         <div>
             {users.map((user, index) => (
                 <Card key={index} style={{ margin: 10 }}>
-                    <Typography.Title level={4}>{user.role}</Typography.Title>
-                    <Row gutter={16}>
-                        {user.role.includes('Admin') ? (
-                            <Button
-                                type="primary"
-                                danger
-                                icon={<MinusCircleOutlined />}
-                                onClick={() =>
-                                    showModal(
-                                        'Bu kullanıcının adminliğini kaldırmak istediğinize emin misiniz?',
-                                        () => api.post(`https://api.colyakdiyabet.com.tr/api/users/verify/removeAdmin/${user.email}`)
-                                    )
-                                }
-                            >
-                                Adminliği kaldır
-                            </Button>
-                        ) : (
-                            <Button
-                                type="primary"
-                                icon={<PlusCircleOutlined />}
-                                onClick={() =>
-                                    showModal(
-                                        'Bu kullanıcıyı admin yapmak istediğinize emin misiniz?',
-                                        () => api.post(`https://api.colyakdiyabet.com.tr/api/users/verify/adminRole/${user.email}`)
-                                    )
-                                }
-                            >
-                                Admin Yap
-                            </Button>
-                        )}
-                        <Button
-                            style={{ marginLeft: 10 }}
-                            type="primary"
-                            danger
-                            icon={<DeleteOutlined />}
-                            onClick={() =>
-                                showModal(
-                                    'Bu kullanıcıyı silmek istediğinize emin misiniz?',
-                                    () => api.delete(`https://api.colyakdiyabet.com.tr/api/users/verify/deleteUser/${user.email}`)
-                                )
-                            }
-                        >
-                            Kullanıcıyı Sil
-                        </Button>
-                    </Row>
+                    <Row><Typography.Title level={4}>{user.role}</Typography.Title>
+                    {user.role.includes('Admin') ? (
+                         
+                         <Button
+                             type="primary"
+                             danger
+                             style={{ backgroundColor: "#ef7927", borderColor: "#ef7927", marginLeft: "692px",marginRight:"10px",marginTop:"20px"}} // Renk ve stil güncellendi
+                             onClick={() =>
+                                 showModal(
+                                     'Bu kullanıcının adminliğini kaldırmak istediğinize emin misiniz?',
+                                     () => api.post(`https://api.colyakdiyabet.com.tr/api/users/verify/removeAdmin/${user.email}`)
+                                 )
+                             }
+                         >
+                             Adminliği kaldır
+                         </Button>
+                     ) : (
+                         <Button
+                             type="primary"
+                             style={{ backgroundColor: "#ef7927", borderColor: "#ef7927", marginRight:"10px",marginTop:"20px",marginLeft:"740px"}} // Renk ve stil güncellendi
+                             onClick={() =>
+                                 showModal(
+                                     'Bu kullanıcıyı admin yapmak istediğinize emin misiniz?',
+                                     () => api.post(`https://api.colyakdiyabet.com.tr/api/users/verify/adminRole/${user.email}`)
+                                 )
+                             }
+                         >
+                             Admin Yap
+                         </Button>
+                     )}
+                     <Button
+                         type="primary"
+                         danger
+                         onClick={() =>
+                             showModal(
+                                 'Bu kullanıcıyı silmek istediğinize emin misiniz?',
+                                 () => api.delete(`https://api.colyakdiyabet.com.tr/api/users/verify/deleteUser/${user.email}`)
+                             )
+                         }style={{marginTop:"20px"}}
+                     >
+                         Kullanıcıyı Sil
+                     </Button></Row>
+                    
                     <Typography.Text>{user.email}</Typography.Text>
                 </Card>
             ))}

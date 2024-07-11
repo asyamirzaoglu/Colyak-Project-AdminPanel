@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, Button, Row, Col, Switch, message, Upload, Image } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import axios from "axios";
+import { styled } from "@mui/material";
 
 const AddReadyFood = ({ onClose }) => {
   const [formData, setFormData] = useState({
@@ -149,6 +150,7 @@ const AddReadyFood = ({ onClose }) => {
       <Form.Item
         name="code"
         rules={[{ required: true, message: "Bu alanı doldurmak zorunludur." }]}
+        label="Barkod"
       >
         <Input
           placeholder="Barkod Kodu"
@@ -164,6 +166,7 @@ const AddReadyFood = ({ onClose }) => {
       <Form.Item
         name="name"
         rules={[{ required: true, message: "Bu alanı doldurmak zorunludur." }]}
+        label="Ürün Adı"
       >
         <Input
           placeholder="Adı"
@@ -191,6 +194,7 @@ const AddReadyFood = ({ onClose }) => {
           }
         />
       </Form.Item>
+      <p style={{fontWeight:"bold"}}>Besin Değerleri</p>
       {formData.nutritionalValuesList.map((attribute, index) => (
         <Row key={index} gutter={16}>
           <Col span={12}>
@@ -199,10 +203,11 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label="Ölçünün Birimi"
             >
               <Input
                 type="number"
-                placeholder="Ölçü Birimi (Örn: 100 gram, 1 yemek kaşığı)"
+                placeholder="Ölçü Birimi (Sadece sayı giriniz.)"
                 value={attribute.unit}
                 onChange={(e) => handleChange(e, index)}
                 name="unit"
@@ -215,9 +220,10 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label="Ölçünün Tipi"
             >
               <Input
-                placeholder="Ölçü Tipi"
+                placeholder="Ölçü Tipi (Örn: Gram, Porsiyon, Litre)"
                 value={attribute.type}
                 onChange={(e) => handleChange(e, index)}
                 name="type"
@@ -230,8 +236,9 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label= "K"
             >
-              <Input
+                <Input
                 type="number"
                 placeholder="Karbonhidrat Miktarı"
                 value={attribute.carbohydrateAmount}
@@ -246,6 +253,7 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label= "P"
             >
               <Input
                 type="number"
@@ -262,6 +270,7 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label= "Y"
             >
               <Input
                 type="number"
@@ -278,6 +287,7 @@ const AddReadyFood = ({ onClose }) => {
               rules={[
                 { required: true, message: "Bu alanı doldurmak zorunludur." },
               ]}
+              label= "Kcal"
             >
               <Input
                 type="number"
@@ -289,15 +299,17 @@ const AddReadyFood = ({ onClose }) => {
             </Form.Item>
           </Col>
           <Row>
-          <Col>
+          <Col span={24} style={{ textAlign: "right" }}>
             <Button onClick={() => handleRemoveUnit(index)}>Sil</Button>
-            <Button onClick={handleAddUnit}>Besin Değeri Ekle</Button>
           </Col>
           </Row>
         </Row>
       ))}
+       <Row justify="center">
+        <Button onClick={handleAddUnit} style={{marginBottom:"20px"}}>Besin Değeri Ekle</Button>
+      </Row>
       <Form.Item>
-      <Form.Item>
+      <Form.Item label="Resim">
   <Upload
     accept="image/*"
     beforeUpload={(file) => {
@@ -320,9 +332,9 @@ const AddReadyFood = ({ onClose }) => {
         <img
           src={formData.imagePreview}
           alt="Resim Önizleme"
-          style={{ maxWidth: "100%", marginTop: "10px" }}
+          style={{ width:"300px", marginTop: "10px" }}
         />
-        <Button onClick={removeImage} style={{ marginTop: "10px" }}>
+        <Button onClick={removeImage} style={{ marginLeft:"400px" }}>
           Resmi Sil
         </Button>
       </div>
